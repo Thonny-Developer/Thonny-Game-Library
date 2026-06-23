@@ -1,0 +1,32 @@
+{
+  "name": "game-library",
+  "version": "0.1.0",
+  "description": "Game Library с поиском, библиотекой и загрузками",
+  "type": "module",
+  "main": "electron/main.cjs",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "bin": {
+    "game-library": "bin/cli.js"
+  },
+  "scripts": {
+    "start": "node scripts/launch.cjs",
+    "build": "node scripts/build.cjs",
+    "test": "node --test",
+    "search": "node bin/cli.js search",
+    "cli": "node bin/cli.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "iconv-lite": "^0.6.3",
+    "webtorrent": "^3.0.16"
+  },
+  "devDependencies": {
+    "electron": "^33.4.11"
+  },
+  "license": "MIT"
+}

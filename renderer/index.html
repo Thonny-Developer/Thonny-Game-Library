@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;" />
+    <title>Game Library</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- ТИТЛБАР (перетаскивание окна + управление) -->
+    <div class="titlebar">
+      <div class="tb-left">
+        <button id="tb-back" class="tb-back hidden">‹&nbsp;Назад</button>
+        <span class="tb-spark">✦</span>
+        <span class="tb-brand">Game Library</span>
+        <span class="tb-sep">—</span>
+        <span class="tb-section" id="tb-section">Загрузка</span>
+      </div>
+      <div class="tb-right">
+        <span class="tb-hint" id="tb-hint">Ctrl+K</span>
+        <div class="tb-controls">
+          <button class="tb-btn" id="win-min" title="Свернуть">─</button>
+          <button class="tb-btn" id="win-max" title="Развернуть">▢</button>
+          <button class="tb-btn tb-close" id="win-close" title="Закрыть">✕</button>
+        </div>
+      </div>
+    </div>
+
+    <main class="below">
+      <!-- ЭКРАН ЗАГРУЗКИ (показывается первым) -->
+      <div id="splash" class="splash-screen">
+        <div class="splash-core">
+          <div class="splash-brand">Game Library</div>
+
+          <ul class="boot-steps" id="boot-steps">
+            <li class="boot-step pending" data-step="mirrors">
+              <span class="boot-ico"></span>
+              <span class="boot-text">
+                <span class="boot-label">Проверка зеркал</span>
+                <span class="boot-note"></span>
+              </span>
+            </li>
+            <li class="boot-step pending" data-step="user">
+              <span class="boot-ico"></span>
+              <span class="boot-text">
+                <span class="boot-label">Проверка пользователя</span>
+                <span class="boot-note"></span>
+              </span>
+            </li>
+            <li class="boot-step pending" data-step="ui">
+              <span class="boot-ico"></span>
+              <span class="boot-text">
+                <span class="boot-label">Загрузка интерфейса</span>
+                <span class="boot-note"></span>
+              </span>
+            </li>
+          </ul>
+
+          <div class="boot-bar"><span class="boot-bar-fill" id="boot-bar-fill"></span></div>
+        </div>
+      </div>
+
+      <!-- ЭКРАН ВХОДА -->
+      <div id="login" class="login-screen hidden">
+        <form id="login-form" class="login-card" autocomplete="off">
+          <div class="login-logo">GL</div>
+          <h1 class="login-title">Game Library</h1>
+          <p class="login-sub">// войдите в свой аккаунт</p>
+
+          <div id="login-error" class="login-error hidden"></div>
+
+          <label class="field">
+            <span>ЛОГИН</span>
+            <input id="login-username" type="text" name="username" required autofocus />
+          </label>
+          <label class="field">
+            <span>ПАРОЛЬ</span>
+            <input id="login-password" type="password" name="password" required />
+          </label>
+
+          <label class="checkbox">
+            <input id="login-remember" type="checkbox" checked />
+            <span>Запомнить меня</span>
+          </label>
+
+          <button id="login-submit" type="submit" class="btn btn-primary btn-block">
+            Войти
+          </button>
+          <button id="login-retry" type="button" class="btn btn-ghost btn-block hidden">
+            Повторить попытку
+          </button>
+        </form>
+        <p class="login-foot">данные передаются напрямую на источник библиотеки</p>
+      </div>
+
+      <!-- ОСНОВНОЕ ПРИЛОЖЕНИЕ -->
+      <div id="app" class="app hidden">
+        <aside class="sidebar">
+          <div class="brand">
+            <span class="brand-spark">✦</span>
+            <span class="brand-name">Game Library</span>
+          </div>
+
+          <nav class="nav">
+            <button class="nav-item active" data-view="home">
+              <span class="nav-mark">›</span><span>Главная</span>
+            </button>
+            <button class="nav-item" data-view="downloads">
+              <span class="nav-mark">›</span><span>Загрузки</span>
+              <span id="dl-badge" class="nav-badge hidden">0</span>
+            </button>
+            <button class="nav-item" data-view="library">
+              <span class="nav-mark">›</span><span>Библиотека</span>
+            </button>
+          </nav>
+
+          <div class="sidebar-bottom">
+            <button id="avatar-btn" class="avatar-btn">
+              <span id="avatar" class="avatar">?</span>
+              <span class="avatar-meta">
+                <span id="avatar-name" class="avatar-name">—</span>
+                <span id="avatar-mirror" class="avatar-mirror">не в сети</span>
+              </span>
+              <span class="chev">▴</span>
+            </button>
+
+            <div id="avatar-menu" class="popover hidden">
+              <button class="popover-item" data-action="settings">⚙&nbsp;&nbsp;Настройки</button>
+              <button class="popover-item danger" data-action="logout">⎋&nbsp;&nbsp;Выйти</button>
+            </div>
+          </div>
+        </aside>
+
+        <section class="content">
+          <!-- ГЛАВНАЯ: поиск -->
+          <section id="view-home" class="view">
+            <header class="view-head">
+              <h2>Поиск раздач</h2>
+              <span id="home-mirror" class="pill"></span>
+            </header>
+            <form id="search-form" class="search-bar">
+              <input id="search-input" type="text" placeholder="название фильма, игры, музыки…" />
+              <button type="submit" class="btn btn-primary">Найти ↵</button>
+            </form>
+            <div id="search-state" class="state hidden"></div>
+            <div id="results" class="results"></div>
+          </section>
+
+          <!-- ЗАГРУЗКИ -->
+          <section id="view-downloads" class="view hidden">
+            <header class="view-head">
+              <h2>Загрузки</h2>
+              <span class="muted">// скачивание содержимого раздач</span>
+            </header>
+            <div id="downloads-list" class="results"></div>
+          </section>
+
+          <!-- БИБЛИОТЕКА -->
+          <section id="view-library" class="view hidden">
+            <header class="view-head">
+              <h2>Библиотека</h2>
+              <span class="muted">// скачанные .torrent и сохранённые magnet</span>
+            </header>
+            <div id="library-list" class="results"></div>
+          </section>
+        </section>
+      </div>
+
+      <!-- НАСТРОЙКИ (во весь экран) -->
+      <div id="settings" class="settings-screen hidden">
+        <nav class="settings-nav">
+          <div class="settings-nav-title">НАСТРОЙКИ</div>
+          <button class="settings-tab active" data-section="account">Аккаунт</button>
+          <button class="settings-tab" data-section="stats">Статистика</button>
+          <button class="settings-tab" data-section="interface">Интерфейс</button>
+          <button class="settings-tab" data-section="about">О приложении</button>
+        </nav>
+        <div class="settings-panel">
+          <header class="settings-head">
+            <h2 id="set-title">Аккаунт</h2>
+            <p id="set-sub" class="muted">Профиль и сессия</p>
+          </header>
+          <div class="settings-content">
+            <section class="settings-section" data-section="account"></section>
+            <section class="settings-section hidden" data-section="stats"></section>
+            <section class="settings-section hidden" data-section="interface"></section>
+            <section class="settings-section hidden" data-section="about"></section>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
