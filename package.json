@@ -2,6 +2,7 @@
   "name": "game-library",
   "version": "0.1.0",
   "description": "Game Library с поиском, библиотекой и загрузками",
+  "author": "Thonny Developer",
   "type": "module",
   "main": "electron/main.cjs",
   "exports": {
@@ -12,7 +13,10 @@
   },
   "scripts": {
     "start": "node scripts/launch.cjs",
-    "build": "node scripts/build.cjs",
+    "build": "electron-builder --win nsis portable --linux AppImage",
+    "build:win": "electron-builder --win nsis portable",
+    "build:linux": "electron-builder --linux AppImage",
+    "pack": "electron-builder --dir",
     "test": "node --test",
     "search": "node bin/cli.js search",
     "cli": "node bin/cli.js"
@@ -26,7 +30,63 @@
     "webtorrent": "^3.0.16"
   },
   "devDependencies": {
-    "electron": "^33.4.11"
+    "electron": "^33.4.11",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "kz.thonny.game-library",
+    "productName": "Game Library",
+    "directories": {
+      "output": "release"
+    },
+    "npmRebuild": false,
+    "files": [
+      "electron/**/*",
+      "renderer/**/*",
+      "src/**/*",
+      "bin/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-portable-${arch}.${ext}"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "category": "Game",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    }
   },
   "license": "MIT"
 }

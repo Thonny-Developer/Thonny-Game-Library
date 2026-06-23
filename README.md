@@ -115,15 +115,24 @@ npm test
 npm run build
 ```
 
-Команда собирает самодостаточную копию приложения в `dist/game-library`.
-После этого можно запустить её так:
+Команда использует `electron-builder` и готовит релизные файлы в `release/`:
+
+- Windows installer: `Game Library-<version>-x64.exe`
+- Windows portable: `Game Library-<version>-portable-x64.exe`
+- Linux AppImage: `Game Library-<version>-x64.AppImage`
+
+Можно собрать платформы отдельно:
 
 ```bash
-cd dist/game-library
-./game-library
+npm run build:win    # installer .exe + portable .exe
+npm run build:linux  # AppImage
 ```
 
-Если удобнее, можно стартовать и через `npm start` внутри этой папки.
+Для быстрой проверки упаковки без создания installer/AppImage используйте:
+
+```bash
+npm run pack
+```
 
 ---
 
